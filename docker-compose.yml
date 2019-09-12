@@ -1,0 +1,21 @@
+version: '3'
+services:
+  ansible:
+    build: docker/ansible
+    environment:
+      HOME: /root
+    tty: true
+    working_dir: /root
+    volumes:
+      - ./ansible:/root/ansible
+  serposcope:
+    build: docker/serposcope
+    ports:
+       - "7134:80"
+    volumes   :
+       - ./bedrock:/var/www/bedrock
+       - mysql_sock:/var/run/mysqld
+       - ./log/nginx:/var/log/nginx
+    tty: true
+volumes:
+  mysql_sock:

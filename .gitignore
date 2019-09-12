@@ -1,0 +1,28 @@
+docker/mysql/data
+log
+# Application
+# Application
+bedrock/web/app/plugins/*
+!bedrock/web/app/plugins/.gitkeep
+bedrock/web/app/mu-plugins/*/
+bedrock/web/app/upgrade
+bedrock/web/app/uploads/*
+!bedrock/web/app/uploads/.gitkeep
+
+# WordPress
+bedrock/web/wp
+bedrock/web/.htaccess
+
+# Dotenv
+.env
+.env.*
+!.env.example
+
+# Composer
+/vendor
+
+# WP-CLI
+wp-cli.local.yml
+
+# MacOS
+.DS_Store

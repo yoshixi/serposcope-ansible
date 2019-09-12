@@ -1,0 +1,9 @@
+---
+- name: Install serposcope
+  hosts: all
+  # remote_user: user
+  become: yes
+
+  roles:
+    - common
+    - serposcope
