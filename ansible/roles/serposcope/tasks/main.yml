@@ -59,16 +59,19 @@
   with_items:
     - ca-certificates
 
-- name: mkdir serposcope
-  file: path=/var/www/
-  state: directory
-  owner: root
-  group: root
-  mode: 0755
-
 - name: create serposcope owner directory
   file: path=/var/www/serposcope
         state=directory
         owner=serposcope
         group=serposcope
         mode=0774
+
+- name: Download serposcope files
+  get_url:
+    url: https://serposcope.serphacker.com/download/2.10.0/serposcope_2.10.0_all.deb
+    dest: /var/www/serposcope
+
+- name: exec serposcope
+  shell: dpkg -i serposcope_2.10.0_all.deb
+  args:
+    chdir: /var/www/serposcope
