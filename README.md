@@ -10,6 +10,12 @@
 
 [systemctlの環境変数を設定する](https://stackoverflow.com/questions/56100690/how-to-configure-java-home-with-openjdk)
 
+こんな感じ
+```yml
+- name: Copy nginx configuration for WordPress
+  template: src=systemctl-override.conf dest=/etc/systemd/system/serposcope.service.d/override.conf
+```
+
 ## Portが7134しか開かない
 Nginx で動く
 [無料のGRC代替クラウドサービス「Serposcope」をConoHaで動かす](https://qiita.com/moroi/items/c6c6336f125f33b1aca4)
