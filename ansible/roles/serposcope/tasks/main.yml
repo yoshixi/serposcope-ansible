@@ -12,52 +12,29 @@
 - name: Add user "serposcope"
   user: name=serposcope group=serposcope home=/var/www/serposcope/
 
-- name: Install dependencies
-  become: yes
-  apt: name={{item}} state=latest
-  with_items:
-    - software-properties-common
-    - dirmngr
-    - default-jre
-    - default-jdk
-
-- name: Install add-apt-repostory
-  become: yes
-  apt: name=software-properties-common state=latest
-
-- name: Add Oracle Java Repository
-  become: yes
-  apt_repository:
-    repo: deb ppa:webupd8team/java xenial main
-    state: present
-
-- name: Add an apt key by id from a keyserver
-  become: yes
-  apt_key:
-    keyserver: keyserver.ubuntu.com
-    id: EEA14886
-
-- name: Accept Java 8 License
-  become: yes
-  debconf: name='oracle-java8-installer' question='shared/accepted-oracle-license-v1-1' value='true' vtype='select'
-
 - name: update cache and ignore errors in case of problems
   become: yes
   apt: update_cache=yes
   ignore_errors: yes
 
-- name: purge java 8 installer - to avoid problems if installation is repeated
-  become: yes
-  apt:
-    name: oracle-java8-installer
-    purge: yes
-    state: absent
-
-- name: Install Oracle Java 8
+- name: Install dependencies
   become: yes
   apt: name={{item}} state=latest
   with_items:
-    - ca-certificates
+    - java-common
+    - dirmngr
+    - default-jre
+    - default-jdk
+
+- name: Download serposcope files
+  get_url:
+    url: https://d3pxv6yz143wms.cloudfront.net/8.212.04.1/java-1.8.0-amazon-corretto-jdk_8.212.04-1_amd64.deb
+    dest: /var/www/serposcope
+
+- name: exec serposcope
+  shell: dpkg --install java-1.8.0-amazon-corretto-jdk_8.212.04-1_amd64.deb
+  args:
+    chdir: /var/www/serposcope
 
 - name: create serposcope owner directory
   file: path=/var/www/serposcope
@@ -65,6 +42,12 @@
         owner=serposcope
         group=serposcope
         mode=0774
+
+- name: systemctl location config file directory
+  file: path=/etc/systemd/system/serposcope.service.d state=directory owner=root group=root mode=0755
+
+- name: Copy nginx configuration for WordPress
+  template: src=systemctl-override.conf dest=/etc/systemd/system/serposcope.service.d/override.conf
 
 - name: Download serposcope files
   get_url:
